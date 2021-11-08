@@ -27,10 +27,9 @@ to save time and networking traffic. The resulting directory will not have any
 ref/object history beyond the specified commit sha.
 
 The repository can be specified as either SSH or HTTPS, but the commit must be
-the 40 digit hexadecimal SHA1 representation.
-
-Both SSH and Basic authentication are supported, granted the proper repository
-URLs are specified. This program does not honor git-config files or options.
+the 40 digit hexadecimal SHA1 representation. Both SSH and Basic authentication
+are supported, granted the proper repository URLs are specified. This program
+does not honor git-config files or options.
 
 Note: this is only compatible with Git servers >= 2.50, they must support and
 enable the 'uploadpack.allowReachableSHA1InWant' configuration option.
@@ -44,7 +43,7 @@ Flags:
   -p, --password string         password for basic authentication
   -i, --key-path string         pem encoded private key file for ssh authentication
   -P, --key-passphrase string   private key passphrase for ssh authentication
-      --rm-dotgit               remove the '.git' directory after pulling files
+  -D, --rm-dotgit               remove the '.git' directory after pulling files
   -v, --verbose                 verbose output
   -h, --help                    help for shallow-fetch-sha
 ```
