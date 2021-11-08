@@ -1,4 +1,4 @@
-package fetch
+package cli
 
 import (
 	"errors"
@@ -68,7 +68,7 @@ func (opts *Options) Auth() (transport.AuthMethod, error) {
 }
 
 func invalid(key, msg string) error {
-	return fmt.Errorf("%q option is invalid: %s", key, msg)
+	return fmt.Errorf("%q is invalid: %s", key, msg)
 }
 
 func (opts *Options) Validate() error {
@@ -106,7 +106,7 @@ func (opts *Options) Validate() error {
 
 func (opts *Options) BindArgs(args []string) error {
 	if len(args) != 2 {
-		return errors.New("must specify both repo and sha arguments")
+		return errors.New("missing arguments: must specify both repo and sha arguments")
 	}
 	opts.Repo = args[0]
 	opts.SHA = args[1]

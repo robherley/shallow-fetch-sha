@@ -1,9 +1,9 @@
 package main
 
 import (
-	cmd "github.com/robherley/shallow-fetch-sha/cmd"
+	"github.com/robherley/shallow-fetch-sha/internal/cli"
 )
 
 func main() {
-	cmd.Execute()
+	cli.Run()
 }

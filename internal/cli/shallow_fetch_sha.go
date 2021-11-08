@@ -1,4 +1,4 @@
-package fetch
+package cli
 
 import (
 	"errors"
@@ -17,7 +17,7 @@ const (
 	depth      = 1
 )
 
-func ShallowSHA(opts *Options) error {
+func shallowFetchSHA(opts *Options) error {
 	absDir, err := filepath.Abs(opts.Directory)
 	if err != nil {
 		return fmt.Errorf("invalid directory: %s", err)
