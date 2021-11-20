@@ -1,4 +1,4 @@
-package cli
+package sfs
 
 import (
 	"errors"
@@ -17,14 +17,22 @@ const (
 	depth      = 1
 )
 
-func shallowFetchSHA(opts *Options) error {
+func ShallowFetchSHA(fs *FileSystem, opts *Options) error {
+	if opts == nil {
+		return errors.New("must initialize options")
+	}
+
+	if fs == nil {
+		return errors.New("must initialize filesystem")
+	}
+
 	log.WithFields(log.Fields{
 		"sha": opts.SHA,
-		"dir": opts.worktree.Root(),
+		"dir": fs.worktree.Root(),
 	}).Info("shallow fetching repository")
 
 	log.Debugln("initalizing repository on filesystem")
-	repo, err := git.Init(opts.storage, opts.worktree)
+	repo, err := git.Init(fs.storage, fs.worktree)
 	if err != nil {
 		return err
 	}
@@ -82,7 +90,7 @@ func shallowFetchSHA(opts *Options) error {
 
 	if opts.RemoveDotGit {
 		log.Debugln("removing \".git\" directory")
-		dotGitPath := filepath.Join(opts.worktree.Root(), git.GitDirName)
+		dotGitPath := filepath.Join(fs.worktree.Root(), git.GitDirName)
 		if err := os.RemoveAll(dotGitPath); err != nil {
 			return fmt.Errorf("unable to remove .git path: %s", err)
 		}

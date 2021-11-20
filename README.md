@@ -1,4 +1,4 @@
-# shallow-fetch-sha 🏗️
+# shallow-fetch-sha (sfs) 🏗️
 
 For a given git repository and commit, fetch and checkout *just* that commit without any history. This can be extremely useful in CI/CD systems that need to ship code from repositories with large ref/object history and only need files at a specific commit.
 

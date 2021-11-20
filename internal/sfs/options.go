@@ -1,33 +1,16 @@
-package cli
+package sfs
 
 import (
 	"errors"
 	"fmt"
 	"net/url"
-	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/go-git/go-billy/v5"
-	"github.com/go-git/go-billy/v5/memfs"
-	"github.com/go-git/go-billy/v5/osfs"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/cache"
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
-	"github.com/go-git/go-git/v5/storage"
-	"github.com/go-git/go-git/v5/storage/filesystem"
-	"github.com/go-git/go-git/v5/storage/memory"
-	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-)
-
-type StorageMode string
-
-const (
-	FileSystemStorageMode StorageMode = "fs"
-	MemoryStorageMode     StorageMode = "mem"
 )
 
 var (
@@ -41,9 +24,6 @@ type Options struct {
 	RemoveDotGit bool
 	BasicAuth    *BasicAuthOptions
 	SSHAuth      *SSHAuthOptions
-
-	storage  storage.Storer
-	worktree billy.Filesystem
 }
 
 type SSHAuthOptions struct {
@@ -124,10 +104,6 @@ func (opts *Options) Validate() error {
 		}
 	}
 
-	if opts.worktree == nil || opts.storage == nil {
-		return errors.New("filesystem storage not initalized")
-	}
-
 	return nil
 }
 
@@ -198,49 +174,4 @@ func (opts *Options) BindFlags(flags *flag.FlagSet) error {
 	opts.RemoveDotGit = rmDotGit
 
 	return nil
-}
-
-func (opts *Options) SetStorageMode(mode StorageMode) error {
-	if opts.Directory == "" {
-		return errors.New("must initalize directory before setting storage mode")
-	}
-
-	log.WithFields(log.Fields{
-		"storagemode": mode,
-	}).Debugln("initalizing working tree and storage")
-
-	switch mode {
-	case FileSystemStorageMode:
-		absDir, err := filepath.Abs(opts.Directory)
-		if err != nil {
-			return fmt.Errorf("invalid directory: %s", err)
-		}
-
-		wt := osfs.New(absDir)
-
-		dotGit, err := wt.Chroot(git.GitDirName)
-		if err != nil {
-			return err
-		}
-
-		opts.worktree = wt
-		opts.storage = filesystem.NewStorage(dotGit, cache.NewObjectLRUDefault())
-
-		return nil
-	case MemoryStorageMode:
-		opts.worktree = memfs.New()
-		opts.storage = memory.NewStorage()
-
-		return nil
-	default:
-		return fmt.Errorf("%q is an invalid storage mode", mode)
-	}
-}
-
-func (opts *Options) GetWorkTree() billy.Filesystem {
-	return opts.worktree
-}
-
-func (opts *Options) GetStorage() storage.Storer {
-	return opts.storage
 }

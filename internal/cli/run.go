@@ -6,10 +6,12 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
+
+	sfs "github.com/robherley/shallow-fetch-sha/internal/sfs"
 )
 
 var (
-	opts    = &Options{}
+	opts    = &sfs.Options{}
 	flags   = pflag.NewFlagSet("shallow-fetch-sha", pflag.ContinueOnError)
 	verbose bool
 	help    bool
@@ -80,15 +82,16 @@ func Run() {
 		failWithUsage(err)
 	}
 
-	if err := opts.SetStorageMode(FileSystemStorageMode); err != nil {
-		failWithUsage(err)
-	}
-
 	if err := opts.Validate(); err != nil {
 		failWithUsage(err)
 	}
 
-	if err := shallowFetchSHA(opts); err != nil {
+	fs, err := sfs.NewFileSystem(opts.Directory, sfs.DiskMode)
+	if err != nil {
+		failWithUsage(err)
+	}
+
+	if err := sfs.ShallowFetchSHA(fs, opts); err != nil {
 		log.Fatalln(err)
 	}
 }
