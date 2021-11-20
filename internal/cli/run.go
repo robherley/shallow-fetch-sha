@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	options = &Options{}
+	opts    = &Options{}
 	flags   = pflag.NewFlagSet("shallow-fetch-sha", pflag.ContinueOnError)
 	verbose bool
 	help    bool
@@ -72,19 +72,23 @@ func Run() {
 		helpme()
 	}
 
-	if err := options.BindArgs(flags.Args()); err != nil {
+	if err := opts.BindArgs(flags.Args()); err != nil {
 		failWithUsage(err)
 	}
 
-	if err := options.BindFlags(flags); err != nil {
+	if err := opts.BindFlags(flags); err != nil {
 		failWithUsage(err)
 	}
 
-	if err := options.Validate(); err != nil {
+	if err := opts.SetStorageMode(FileSystemStorageMode); err != nil {
 		failWithUsage(err)
 	}
 
-	if err := shallowFetchSHA(options); err != nil {
+	if err := opts.Validate(); err != nil {
+		failWithUsage(err)
+	}
+
+	if err := shallowFetchSHA(opts); err != nil {
 		log.Fatalln(err)
 	}
 }

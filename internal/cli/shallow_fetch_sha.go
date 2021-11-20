@@ -18,15 +18,13 @@ const (
 )
 
 func shallowFetchSHA(opts *Options) error {
-	absDir, err := filepath.Abs(opts.Directory)
-	if err != nil {
-		return fmt.Errorf("invalid directory: %s", err)
-	}
 	log.WithFields(log.Fields{
 		"sha": opts.SHA,
-		"dir": absDir,
+		"dir": opts.worktree.Root(),
 	}).Info("shallow fetching repository")
-	repo, err := git.PlainInit(opts.Directory, false)
+
+	log.Debugln("initalizing repository on filesystem")
+	repo, err := git.Init(opts.storage, opts.worktree)
 	if err != nil {
 		return err
 	}
@@ -84,7 +82,7 @@ func shallowFetchSHA(opts *Options) error {
 
 	if opts.RemoveDotGit {
 		log.Debugln("removing \".git\" directory")
-		dotGitPath := filepath.Join(absDir, git.GitDirName)
+		dotGitPath := filepath.Join(opts.worktree.Root(), git.GitDirName)
 		if err := os.RemoveAll(dotGitPath); err != nil {
 			return fmt.Errorf("unable to remove .git path: %s", err)
 		}
