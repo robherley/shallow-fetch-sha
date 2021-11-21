@@ -1,8 +1,13 @@
+project_name: shallow-fetch-sha
 before:
   hooks:
     - go mod tidy
+    - go fmt
+    - go vet
 builds:
-  - env:
+  - binary: sfs
+    ldflags: '-extldflags "-static"'
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -15,6 +20,9 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+    files:
+      - README.md
+      - LICENSE
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -25,3 +33,10 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+dockers:
+  - goos: linux
+    goarch: amd64
+    use: docker
+    dockerfile: Dockerfile
+    image_templates:
+    - "gchr.io/robherley/shallow-fetch-sha:{{.Version}}"
