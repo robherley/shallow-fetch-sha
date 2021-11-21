@@ -29,6 +29,7 @@ jobs:
           ginkgo -r
         env:
           ACK_GINKGO_RC: 'true'
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
           SSH_PEM_NO_PASS: ${{ secrets.SSH_PEM_NO_PASS }}
           SSH_PEM_WITH_PASS: ${{ secrets.SSH_PEM_WITH_PASS }}
