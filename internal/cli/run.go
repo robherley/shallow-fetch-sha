@@ -32,26 +32,6 @@ enable the 'uploadpack.allowReachableSHA1InWant' configuration option.`
 	usage = "shallow-fetch-sha <repo> <sha> [flags]"
 )
 
-func init() {
-	flags.StringP("directory", "d", ".", "working directory for the repository")
-	flags.StringP("username", "u", "", "username for basic authentication")
-	flags.StringP("password", "p", "", "password for basic authentication")
-	flags.StringP("key-path", "i", "", "pem encoded private key file for ssh authentication")
-	flags.StringP("key-passphrase", "P", "", "private key passphrase for ssh authentication")
-	flags.BoolP("rm-dotgit", "D", false, "remove the '.git' directory after pulling files")
-	flags.BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	flags.BoolVarP(&help, "help", "h", false, "help for shallow-fetch-sha")
-
-	flags.SortFlags = false
-	flags.Usage = func() {
-		fmt.Fprintf(os.Stderr, "usage: %s\nsee \"shallow-fetch-sha --help\" for more information\n", usage)
-	}
-
-	if err := flags.Parse(os.Args[1:]); err != nil {
-		failWithUsage(err)
-	}
-}
-
 func helpme() {
 	fmt.Fprintln(os.Stderr, description)
 	fmt.Fprintf(os.Stderr, "\nUsage:\n  %s\n", usage)
@@ -65,7 +45,29 @@ func failWithUsage(err error) {
 	os.Exit(1)
 }
 
+func AddFlags(flagset *pflag.FlagSet) {
+	flagset.StringP("directory", "d", ".", "working directory for the repository")
+	flagset.StringP("username", "u", "", "username for basic authentication")
+	flagset.StringP("password", "p", "", "password for basic authentication")
+	flagset.StringP("key-path", "i", "", "pem encoded private key file for ssh authentication")
+	flagset.StringP("key-passphrase", "P", "", "private key passphrase for ssh authentication")
+	flagset.BoolP("rm-dotgit", "D", false, "remove the '.git' directory after pulling files")
+	flagset.BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	flagset.BoolVarP(&help, "help", "h", false, "help for shallow-fetch-sha")
+}
+
 func Run() {
+	AddFlags(flags)
+
+	flags.SortFlags = false
+	flags.Usage = func() {
+		fmt.Fprintf(os.Stderr, "usage: %s\nsee \"shallow-fetch-sha --help\" for more information\n", usage)
+	}
+
+	if err := flags.Parse(os.Args[1:]); err != nil {
+		failWithUsage(err)
+	}
+
 	if verbose {
 		log.SetLevel(log.DebugLevel)
 	}
@@ -86,12 +88,7 @@ func Run() {
 		failWithUsage(err)
 	}
 
-	fs, err := sfs.NewFileSystem(opts.Directory, sfs.DiskMode)
-	if err != nil {
-		failWithUsage(err)
-	}
-
-	if err := sfs.ShallowFetchSHA(fs, opts); err != nil {
+	if err := sfs.ShallowFetchSHA(opts); err != nil {
 		log.Fatalln(err)
 	}
 }

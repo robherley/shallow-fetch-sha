@@ -3,7 +3,6 @@ package sfs
 import (
 	"errors"
 	"fmt"
-	"net/url"
 	"regexp"
 	"strings"
 
@@ -42,13 +41,11 @@ func (opts *Options) Auth() (transport.AuthMethod, error) {
 		user := "git"
 
 		// if different user specified in ssh url
-		pieces := strings.Split(opts.Repo, ":")
+		pieces := strings.Split(opts.Repo, "@")
 		if len(pieces) == 2 {
-			if parsed, err := url.Parse(pieces[0]); err != nil {
-				parsedUser := parsed.User.Username()
-				if parsedUser != "" {
-					user = parsedUser
-				}
+			parsedUser := pieces[0]
+			if parsedUser != "" {
+				user = parsedUser
 			}
 		}
 

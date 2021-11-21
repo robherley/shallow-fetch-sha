@@ -17,22 +17,23 @@ const (
 	depth      = 1
 )
 
-func ShallowFetchSHA(fs *FileSystem, opts *Options) error {
+func ShallowFetchSHA(opts *Options) error {
 	if opts == nil {
 		return errors.New("must initialize options")
 	}
 
-	if fs == nil {
-		return errors.New("must initialize filesystem")
+	absDir, err := filepath.Abs(opts.Directory)
+	if err != nil {
+		return fmt.Errorf("invalid directory: %s", err)
 	}
 
 	log.WithFields(log.Fields{
 		"sha": opts.SHA,
-		"dir": fs.worktree.Root(),
+		"dir": absDir,
 	}).Info("shallow fetching repository")
 
 	log.Debugln("initalizing repository on filesystem")
-	repo, err := git.Init(fs.storage, fs.worktree)
+	repo, err := git.PlainInit(absDir, false)
 	if err != nil {
 		return err
 	}
@@ -89,8 +90,8 @@ func ShallowFetchSHA(fs *FileSystem, opts *Options) error {
 	}
 
 	if opts.RemoveDotGit {
-		log.Debugln("removing \".git\" directory")
-		dotGitPath := filepath.Join(fs.worktree.Root(), git.GitDirName)
+		log.Debugf("removing %q directory\n", git.GitDirName)
+		dotGitPath := filepath.Join(absDir, git.GitDirName)
 		if err := os.RemoveAll(dotGitPath); err != nil {
 			return fmt.Errorf("unable to remove .git path: %s", err)
 		}

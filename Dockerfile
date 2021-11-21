@@ -8,7 +8,6 @@ RUN go mod download
 RUN go mod verify
 
 COPY main.go main.go
-COPY cmd/ cmd/
 COPY internal/ internal/
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o shallow-fetch-sha .
