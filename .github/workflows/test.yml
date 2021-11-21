@@ -17,6 +17,7 @@ jobs:
       - name: Run tests with Ginkgo
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           go install github.com/onsi/ginkgo/ginkgo@latest
           ginkgo -r
         env:
