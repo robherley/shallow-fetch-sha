@@ -90,7 +90,7 @@ var _ = BeforeSuite(func() {
 
 	sshPassphrase = os.Getenv("SSH_PASSPHRASE")
 	sshKeyNoPassPath = makePEMFile("id_no_pass.pem", os.Getenv("SSH_PEM_NO_PASS"))
-	sshKeyWithPassPath = makePEMFile("id_no_pass.pem", os.Getenv("SSH_PEM_NO_PASS"))
+	sshKeyWithPassPath = makePEMFile("id_with_pass.pem", os.Getenv("SSH_PEM_WITH_PASS"))
 
 	// authenticate as a bot, get an access token
 	botKeyPath := makePEMFile("bot.pem", os.Getenv("BOT_PEM"))
