@@ -18,3 +18,10 @@ jobs:
         run: |
           go install github.com/onsi/ginkgo/ginkgo@latest
           ginkgo -r
+        env:
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          SSH_PEM_NO_PASS: ${{ secrets.SSH_PEM_NO_PASS }}
+          SSH_PEM_WITH_PASS: ${{ secrets.SSH_PEM_WITH_PASS }}
+          BOT_PEM: ${{ secrets.BOT_PEM }}
+          BOT_INSTALLATION_ID: ${{ secrets.BOT_INSTALLATION_ID }}
+          BOT_ID:  ${{ secrets.BOT_ID }}
