@@ -1,11 +1,17 @@
 package sfs_test
 
 import (
-	"fmt"
+	"context"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/bradleyfalzon/ghinstallation/v2"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/joho/godotenv"
 	. "github.com/onsi/ginkgo"
@@ -27,20 +33,22 @@ var (
 	publicRepo = repoFixture{
 		SSH:    "git@github.com:robherley/fixture-public-repo.git",
 		HTTPS:  "https://github.com/robherley/fixture-public-repo.git",
-		Commit: "6c7ddd59f0feec261a1788ced53c3e06f8cddda6",
+		Commit: "1bd1c0c32ff7d4b4db95a3591a5c018b86708c8b",
 		ExpectedFiles: []string{
 			"README.md",
 			"index.js",
+			"public.txt",
 		},
 	}
 
 	privateRepo = repoFixture{
 		SSH:    "git@github.com:robherley/fixture-private-repo.git",
 		HTTPS:  "https://github.com/robherley/fixture-private-repo.git",
-		Commit: "ce7f2ec17e070ddcb5c4a9a19e32267518ebab7e",
+		Commit: "0196c49057e45387838aa3a1d0601e8c7a4317d0",
 		ExpectedFiles: []string{
 			"README.md",
 			"index.js",
+			"private.txt",
 		},
 	}
 
@@ -66,10 +74,12 @@ var _ = BeforeSuite(func() {
 	_ = godotenv.Load(testEnvFile)
 
 	requiredEnvVars := []string{
-		"BOT_TOKEN",
 		"SSH_PASSPHRASE",
 		"SSH_PEM_NO_PASS",
 		"SSH_PEM_WITH_PASS",
+		"BOT_PEM",
+		"BOT_INSTALLATION_ID",
+		"BOT_ID",
 	}
 	for _, envVar := range requiredEnvVars {
 		if os.Getenv(envVar) == "" {
@@ -77,15 +87,24 @@ var _ = BeforeSuite(func() {
 		}
 	}
 
-	botToken = os.Getenv("BOT_TOKEN")
 	sshPassphrase = os.Getenv("SSH_PASSPHRASE")
 	sshKeyNoPassPath = makePEMFile("id_no_pass.pem", os.Getenv("SSH_PEM_NO_PASS"))
 	sshKeyWithPassPath = makePEMFile("id_no_pass.pem", os.Getenv("SSH_PEM_NO_PASS"))
 
-	fmt.Println(botToken)
-	fmt.Println(sshPassphrase)
-	fmt.Println(sshKeyNoPassPath)
-	fmt.Println(sshKeyWithPassPath)
+	// authenticate as a bot, get an access token
+	botKeyPath := makePEMFile("bot.pem", os.Getenv("BOT_PEM"))
+	botID, err := strconv.Atoi(os.Getenv("BOT_ID"))
+	plsno(err)
+	installationID, err := strconv.Atoi(os.Getenv("BOT_INSTALLATION_ID"))
+	plsno(err)
+	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, int64(botID), int64(installationID), botKeyPath)
+	plsno(err)
+
+	botToken, err = itr.Token(context.Background())
+	plsno(err)
+
+	// reduce noise
+	log.SetOutput(ioutil.Discard)
 })
 
 var _ = AfterSuite(func() {
@@ -98,11 +117,15 @@ var _ = AfterSuite(func() {
 	}
 })
 
-func makeTemp() string {
-	tmpdir, err := os.MkdirTemp("", "sfs-*")
+func plsno(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func makeTemp() string {
+	tmpdir, err := os.MkdirTemp("", "sfs-*")
+	plsno(err)
 	dirsToCleanUp = append(dirsToCleanUp, tmpdir)
 	return tmpdir
 }
@@ -112,9 +135,7 @@ func makePEMFile(filename, contents string) string {
 	fp := filepath.Join(tmpdir, filename)
 	bs := []byte(contents)
 
-	if err := os.WriteFile(fp, bs, 0600); err != nil {
-		panic(err)
-	}
+	plsno(os.WriteFile(fp, bs, 0600))
 
 	return fp
 }

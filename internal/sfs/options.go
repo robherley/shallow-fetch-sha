@@ -23,6 +23,7 @@ type Options struct {
 	RemoveDotGit bool
 	BasicAuth    *BasicAuthOptions
 	SSHAuth      *SSHAuthOptions
+	Silent       bool
 }
 
 type SSHAuthOptions struct {

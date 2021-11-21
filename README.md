@@ -44,6 +44,7 @@ Flags:
   -i, --key-path string         pem encoded private key file for ssh authentication
   -P, --key-passphrase string   private key passphrase for ssh authentication
   -D, --rm-dotgit               remove the '.git' directory after pulling files
+  -s, --silent                  silent output (takes precedence over verbose)
   -v, --verbose                 verbose output
   -h, --help                    help for shallow-fetch-sha
 ```

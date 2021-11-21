@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -13,6 +14,7 @@ import (
 var (
 	opts    = &sfs.Options{}
 	flags   = pflag.NewFlagSet("shallow-fetch-sha", pflag.ContinueOnError)
+	silent  bool
 	verbose bool
 	help    bool
 )
@@ -52,6 +54,7 @@ func AddFlags(flagset *pflag.FlagSet) {
 	flagset.StringP("key-path", "i", "", "pem encoded private key file for ssh authentication")
 	flagset.StringP("key-passphrase", "P", "", "private key passphrase for ssh authentication")
 	flagset.BoolP("rm-dotgit", "D", false, "remove the '.git' directory after pulling files")
+	flagset.BoolVarP(&silent, "silent", "s", false, "silent output (takes precedence over verbose)")
 	flagset.BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 	flagset.BoolVarP(&help, "help", "h", false, "help for shallow-fetch-sha")
 }
@@ -66,6 +69,11 @@ func Run() {
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		failWithUsage(err)
+	}
+
+	if silent {
+		log.SetOutput(ioutil.Discard)
+		opts.Silent = true
 	}
 
 	if verbose {

@@ -1,0 +1,24 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug CLI",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "main.go",
+            "args": ["git@github.com:robherley/reb.gg.git", "fd40042f1a21da61b4abddebbe94f21dc700ffb0", "-d", "s${input:directory}"],
+        }
+    ],
+    "inputs": [
+        {
+            "id": "directory",
+            "type": "command",
+            // requires "augustocdias.tasks-shell-input" extension
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "mktemp -d"
+            }
+        }
+    ]
+}

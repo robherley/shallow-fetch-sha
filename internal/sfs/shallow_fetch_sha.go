@@ -9,6 +9,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	gitcfg "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/protocol/packp/sideband"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -52,6 +53,14 @@ func ShallowFetchSHA(opts *Options) error {
 
 	refspec := gitcfg.RefSpec(fmt.Sprintf(gitcfg.DefaultFetchRefSpec, opts.SHA))
 
+	var progress sideband.Progress
+	if opts.Silent {
+		progress = nil
+	} else {
+		// most normal git commads output to stderr
+		progress = os.Stderr
+	}
+
 	log.WithFields(log.Fields{
 		"remote":  remoteName,
 		"url":     opts.Repo,
@@ -63,7 +72,7 @@ func ShallowFetchSHA(opts *Options) error {
 		RefSpecs: []gitcfg.RefSpec{
 			refspec,
 		},
-		Progress: os.Stdout,
+		Progress: progress,
 	})
 	if err != nil {
 		return err
