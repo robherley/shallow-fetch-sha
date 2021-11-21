@@ -2,6 +2,7 @@ package sfs_test
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -136,6 +137,7 @@ func makePEMFile(filename, contents string) string {
 	bs := []byte(contents)
 
 	plsno(os.WriteFile(fp, bs, 0600))
+	fmt.Println("added key to", fp)
 
 	return fp
 }
