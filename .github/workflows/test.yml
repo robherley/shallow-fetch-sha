@@ -16,12 +16,15 @@ jobs:
           go-version: 1.17
       - name: Run tests with Ginkgo
         run: |
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           go install github.com/onsi/ginkgo/ginkgo@latest
           ginkgo -r
         env:
+          ACK_GINKGO_RC: 'true'
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
           SSH_PEM_NO_PASS: ${{ secrets.SSH_PEM_NO_PASS }}
           SSH_PEM_WITH_PASS: ${{ secrets.SSH_PEM_WITH_PASS }}
           BOT_PEM: ${{ secrets.BOT_PEM }}
           BOT_INSTALLATION_ID: ${{ secrets.BOT_INSTALLATION_ID }}
-          BOT_ID:  ${{ secrets.BOT_ID }}
+          BOT_ID: ${{ secrets.BOT_ID }}

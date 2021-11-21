@@ -56,13 +56,13 @@ The entrypoint is the `shallow-fetch-sha` binary, and the default working direct
 Basic usage:
 
 ```console
-you@local:~$ podman run -it registry.tbd/robherley/shallow-fetch-sha:$TAG <repo> <sha> [flags]
+you@local:~$ podman run -it ghcr.io/robherley/shallow-fetch-sha:$TAG <repo> <sha> [flags]
 ```
 
 Fetching a repo/commit and saving to a local directory:
 
 ```console
-you@local:~$ podman run -it --rm -v $(pwd)/repo:/usr/src/repo registry.tbd/robherley/shallow-fetch-sha:$TAG https://github.com/robherley/reb.gg fd40042f1a21da61b4abddebbe94f21dc700ffb0
+you@local:~$ podman run -it --rm -v $(pwd)/repo:/usr/src/repo ghcr.io/robherley/shallow-fetch-sha:$TAG https://github.com/robherley/reb.gg fd40042f1a21da61b4abddebbe94f21dc700ffb0
 INFO[0000] shallow fetching repository                   dir=/usr/src/repo sha=fd40042f1a21da61b4abddebbe94f21dc700ffb0
 Enumerating objects: 4, done.
 Counting objects: 100% (4/4), done.
