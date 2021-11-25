@@ -56,6 +56,9 @@ var _ = Describe("ShallowFetchSha", func() {
 			SHA:       publicRepo.Commit,
 			Directory: tmpDir,
 			Silent:    true,
+			SSHAuth: &sfs.SSHAuthOptions{
+				PEMPath: sshKeyNoPassPath,
+			},
 		}
 
 		err := sfs.ShallowFetchSHA(&options)
@@ -127,7 +130,7 @@ var _ = Describe("ShallowFetchSha", func() {
 	It("should remove dot git if specified", func() {
 		tmpDir := makeTemp()
 		options := sfs.Options{
-			Repo:         publicRepo.SSH,
+			Repo:         publicRepo.HTTPS,
 			SHA:          publicRepo.Commit,
 			Directory:    tmpDir,
 			RemoveDotGit: true,
