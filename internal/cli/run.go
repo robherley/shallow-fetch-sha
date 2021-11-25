@@ -31,7 +31,7 @@ does not honor git-config files or options.
 
 Note: this is only compatible with Git servers >= 2.50, they must support and
 enable the 'uploadpack.allowReachableSHA1InWant' configuration option.`
-	usage = "shallow-fetch-sha <repo> <sha> [flags]"
+	usage = "sfs <repo> <sha> [flags]"
 )
 
 func helpme() {

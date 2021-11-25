@@ -105,24 +105,23 @@ var _ = Describe("ShallowFetchSha", func() {
 	})
 
 	It("should fetch a private repo via https", func() {
-		// TODO()
-		// tmpDir := makeTemp()
-		// options := sfs.Options{
-		// 	Repo:      privateRepo.HTTPS,
-		// 	SHA:       privateRepo.Commit,
-		// 	Directory: tmpDir,
-		// 	BasicAuth: &sfs.BasicAuthOptions{
-		// 		Username: "x-access-token",
-		// 		Password: botToken,
-		// 	},
-		// 	Silent: true,
-		// }
+		tmpDir := makeTemp()
+		options := sfs.Options{
+			Repo:      privateRepo.HTTPS,
+			SHA:       privateRepo.Commit,
+			Directory: tmpDir,
+			BasicAuth: &sfs.BasicAuthOptions{
+				Username: "x-access-token",
+				Password: botToken,
+			},
+			Silent: true,
+		}
 
-		// err := sfs.ShallowFetchSHA(&options)
-		// Expect(err).To(BeNil())
+		err := sfs.ShallowFetchSHA(&options)
+		Expect(err).To(BeNil())
 
-		// seenAllFiles := checkFiles(tmpDir, privateRepo.ExpectedFiles)
-		// Expect(seenAllFiles).To(BeTrue())
+		seenAllFiles := checkFiles(tmpDir, privateRepo.ExpectedFiles)
+		Expect(seenAllFiles).To(BeTrue())
 	})
 
 	It("should remove dot git if specified", func() {

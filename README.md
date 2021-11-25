@@ -21,7 +21,7 @@ This utility is shipped as a standalone binary as well as a container. It is bui
 ### CLI (standalone binary)
 
 ```console
-you@local:~$ shallow-fetch-sha --help
+you@local:~$ sfs --help
 For a given git repository and commit sha, fetch and checkout a specific commit
 to save time and networking traffic. The resulting directory will not have any
 ref/object history beyond the specified commit sha.
@@ -35,7 +35,7 @@ Note: this is only compatible with Git servers >= 2.50, they must support and
 enable the 'uploadpack.allowReachableSHA1InWant' configuration option.
 
 Usage:
-  shallow-fetch-sha <repo> <sha> [flags]
+  sfs <repo> <sha> [flags]
 
 Flags:
   -d, --directory string        working directory for the repository (default ".")
@@ -51,7 +51,7 @@ Flags:
 
 ### Container
 
-The entrypoint is the `shallow-fetch-sha` binary, and the default working directory is `/usr/src/repo`. The user is the default non-priviledged `guest (uid=405)` user within the [alpine](https://hub.docker.com/_/alpine/) image.
+The entrypoint is the `shallow-fetch-sha` binary, and the default working directory is `/usr/src/repo`. The user a non-priviledged user `sfs-user (uid=1001,gid=1001)` within the [alpine](https://hub.docker.com/_/alpine/) image.
 
 Basic usage:
 

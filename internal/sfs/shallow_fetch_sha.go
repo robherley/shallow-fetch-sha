@@ -36,7 +36,9 @@ func ShallowFetchSHA(opts *Options) error {
 	log.Debugln("initalizing repository on filesystem")
 	repo, err := git.PlainInit(absDir, false)
 	if err != nil {
-		return err
+		// the ssh agent client go-git uses makes confusing errors
+		log.Debugln(err)
+		return errors.New("unable to initalize remote, did you specify auth properly?")
 	}
 
 	log.WithFields(log.Fields{
@@ -57,8 +59,17 @@ func ShallowFetchSHA(opts *Options) error {
 	if opts.Silent {
 		progress = nil
 	} else {
-		// most normal git commads output to stderr
+		// most normal git commands output to stderr
 		progress = os.Stderr
+	}
+
+	log.WithFields(log.Fields{
+		"https": opts.BasicAuth != nil,
+		"ssh":   opts.SSHAuth != nil,
+	}).Debugln("configuring auth")
+	auth, err := opts.Auth()
+	if err != nil {
+		return err
 	}
 
 	log.WithFields(log.Fields{
@@ -73,6 +84,7 @@ func ShallowFetchSHA(opts *Options) error {
 			refspec,
 		},
 		Progress: progress,
+		Auth:     auth,
 	})
 	if err != nil {
 		return err

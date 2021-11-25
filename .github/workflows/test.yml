@@ -3,10 +3,8 @@ name: Test
 on: [push, workflow_dispatch]
 
 jobs:
-  test:
+  bdd-tests:
     runs-on: ubuntu-latest
-    env:
-      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -16,13 +14,10 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - name: Setup ssh
+      - name: Set up known hosts
         run: |
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          mkdir ~/.ssh/
-          chmod 700 ~/.ssh/
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
+          ./script/generate_known_hosts
+          cd /tmp && generate_known_hosts && mv ssh_known_hosts /etc/ssh/ssh_known_hosts
       - name: Run tests with Ginkgo
         run: |
           go install github.com/onsi/ginkgo/ginkgo@latest

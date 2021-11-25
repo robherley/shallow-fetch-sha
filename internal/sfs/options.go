@@ -36,6 +36,10 @@ type BasicAuthOptions struct {
 	Password string
 }
 
+func invalid(key, msg string) error {
+	return fmt.Errorf("%q is invalid: %s", key, msg)
+}
+
 func (opts *Options) Auth() (transport.AuthMethod, error) {
 	if opts.SSHAuth != nil {
 		// default user to 'git'
@@ -67,10 +71,6 @@ func (opts *Options) Auth() (transport.AuthMethod, error) {
 	}
 
 	return nil, nil
-}
-
-func invalid(key, msg string) error {
-	return fmt.Errorf("%q is invalid: %s", key, msg)
 }
 
 func (opts *Options) Validate() error {

@@ -29,12 +29,8 @@ snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
 dockers:
   - use: docker
     dockerfile: Dockerfile
     image_templates:
-    - "gchr.io/robherley/shallow-fetch-sha:{{.Version}}"
+    - "ghcr.io/robherley/shallow-fetch-sha:{{.Version}}"
