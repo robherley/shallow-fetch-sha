@@ -14,10 +14,11 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - name: Set up known hosts
+      - name: Set up known hosts for SSH tests
         run: |
+          cd /tmp
           ./script/generate_known_hosts
-          cd /tmp && generate_known_hosts && mv ssh_known_hosts /etc/ssh/ssh_known_hosts
+          mv ssh_known_hosts /etc/ssh/ssh_known_hosts
       - name: Run tests with Ginkgo
         run: |
           go install github.com/onsi/ginkgo/ginkgo@latest
