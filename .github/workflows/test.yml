@@ -17,7 +17,7 @@ jobs:
       - name: Set up known hosts for SSH tests
         run: |
           ./script/generate_known_hosts
-          mv ssh_known_hosts /etc/ssh/ssh_known_hosts
+          mv ssh_known_hosts ~/.ssh/known_hosts
       - name: Run tests with Ginkgo
         run: |
           go install github.com/onsi/ginkgo/ginkgo@latest
