@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+output='sfs'
+
+CGO_ENABLED=0
+ldflags='-extldflags=-static'
+
+while getopts o: flag
+do
+  case $flag in
+    o) output=$OPTARG;;
+  esac
+done
+
+go build -a -ldflags "$ldflags" -o $output .

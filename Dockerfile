@@ -9,8 +9,10 @@ RUN go mod verify
 
 COPY main.go main.go
 COPY internal/ internal/
+COPY script/ script/
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o sfs .
+RUN script/build -o sfs
+RUN script/generate_known_hosts
 
 FROM alpine
 
@@ -20,9 +22,7 @@ RUN apk --update --no-cache add bash git openssh ca-certificates
 RUN update-ca-certificates
 
 COPY --from=builder --chown=1001:1001 /build/sfs /usr/local/bin/sfs
-
-COPY --chown=1001:1001 ./script/generate_known_hosts /usr/local/bin/generate_known_hosts
-RUN cd /tmp && generate_known_hosts && mv ssh_known_hosts /etc/ssh/ssh_known_hosts
+COPY --from=builder --chown=1001:1001 /build/ssh_known_hosts /etc/ssh/ssh_known_hosts
 
 RUN adduser -Du 1001 sfs-user
 USER sfs-user
