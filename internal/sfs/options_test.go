@@ -130,7 +130,7 @@ var _ = Describe("Options", func() {
 
 		It("should bind directory flag", func() {
 			directory := "./foo/bar"
-			dummyFlags.Set("directory", directory)
+			_ = dummyFlags.Set("directory", directory)
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.Directory).To(Equal(directory))
@@ -138,7 +138,7 @@ var _ = Describe("Options", func() {
 
 		It("should bind username flag", func() {
 			username := "bob"
-			dummyFlags.Set("username", username)
+			_ = dummyFlags.Set("username", username)
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.BasicAuth.Username).To(Equal(username))
@@ -146,7 +146,7 @@ var _ = Describe("Options", func() {
 
 		It("should bind password flag", func() {
 			password := "notpassword"
-			dummyFlags.Set("password", password)
+			_ = dummyFlags.Set("password", password)
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.BasicAuth.Password).To(Equal(password))
@@ -154,7 +154,7 @@ var _ = Describe("Options", func() {
 
 		It("should bind key-path flag", func() {
 			keypath := "/my/key.pem"
-			dummyFlags.Set("key-path", keypath)
+			_ = dummyFlags.Set("key-path", keypath)
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.SSHAuth.PEMPath).To(Equal(keypath))
@@ -162,19 +162,19 @@ var _ = Describe("Options", func() {
 
 		It("should bind key-passphrase flag", func() {
 			passphrase := "foo-bar-baz"
-			dummyFlags.Set("key-passphrase", passphrase)
+			_ = dummyFlags.Set("key-passphrase", passphrase)
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.SSHAuth.Passphrase).To(Equal(passphrase))
 		})
 
 		It("should bind rm-dotgit flag", func() {
-			dummyFlags.Set("rm-dotgit", "true")
+			_ = dummyFlags.Set("rm-dotgit", "true")
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.RemoveDotGit).To(Equal(true))
 
-			dummyFlags.Set("rm-dotgit", "false")
+			_ = dummyFlags.Set("rm-dotgit", "false")
 
 			Expect(options.BindFlags(dummyFlags)).To(BeNil())
 			Expect(options.RemoveDotGit).To(Equal(false))

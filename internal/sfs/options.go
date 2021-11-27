@@ -65,7 +65,7 @@ func (opts *Options) Auth() (transport.AuthMethod, error) {
 		}
 
 		return &http.BasicAuth{
-			Username: opts.BasicAuth.Username,
+			Username: user,
 			Password: opts.BasicAuth.Password,
 		}, nil
 	}
