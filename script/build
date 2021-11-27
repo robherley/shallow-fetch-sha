@@ -2,9 +2,6 @@
 
 output='sfs'
 
-CGO_ENABLED=0
-ldflags='-extldflags=-static'
-
 while getopts o: flag
 do
   case $flag in
@@ -12,4 +9,5 @@ do
   esac
 done
 
-go build -a -ldflags "$ldflags" -o $output .
+CGO_ENABLED=0 go build -a -ldflags='-extldflags=-static' -o $output
+chmod +x $output
